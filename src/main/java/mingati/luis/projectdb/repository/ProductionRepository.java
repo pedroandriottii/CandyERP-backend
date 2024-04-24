@@ -23,8 +23,8 @@ public class ProductionRepository {
   }
 
   public int save(Production production) {
-    return jdbcTemplate.update("INSERT INTO Production (id, start_date, end_date) VALUES (?, ?, ?)",
-        new Object[] { production.getId(), production.getStart_date(),
+    return jdbcTemplate.update("INSERT INTO Production (start_date, end_date) VALUES (?, ?)",
+        new Object[] { production.getStart_date(),
             production.getEnd_date() });
   }
 

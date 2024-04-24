@@ -21,8 +21,8 @@ public class SupplierRepository {
   }
 
   public int save(Supplier supplier) {
-    return jdbcTemplate.update("INSERT INTO Supplier (id, name, cnpj) VALUES (?, ?, ?)",
-        new Object[] { supplier.getId(), supplier.getName(), supplier.getCnpj() });
+    return jdbcTemplate.update("INSERT INTO Supplier (name, cnpj) VALUES (?, ?)",
+        new Object[] { supplier.getName(), supplier.getCnpj() });
   }
 
   public int update(Supplier supplier) {

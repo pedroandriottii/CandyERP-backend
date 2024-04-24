@@ -1,29 +1,30 @@
 package mingati.luis.projectdb.service;
 
-import mingati.luis.projectdb.model.User;
-import mingati.luis.projectdb.repository.UserRepository;
+import mingati.luis.projectdb.model.Client;
+import mingati.luis.projectdb.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
-@Service
-public class UserService {
-    @Autowired
-    private UserRepository userRepository;
 
-    public List<User> findAll() {
+@Service
+public class ClientService {
+    @Autowired
+    private ClientRepository userRepository;
+
+    public List<Client> findAll() {
         return userRepository.findAll();
     }
 
-    public User findById(int id) {
+    public Client findById(int id) {
         return userRepository.findById(id);
     }
 
-    public User save(User user) {
+    public Client save(Client user) {
         userRepository.save(user);
         return user;
     }
 
-    public User update(User user) {
+    public Client update(Client user) {
         userRepository.update(user);
         return user;
     }
