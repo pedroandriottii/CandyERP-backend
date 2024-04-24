@@ -40,4 +40,10 @@ public class ProductionController {
     productionService.deleteById(id);
   }
 
+  // @GetMapping("/product/{id}/products")
+  // public List<Production> getProductionsByProductId(@PathVariable("id") int id)
+  // {
+  // return productionService.getProductsByProductionId(id);
+  // }
+
 }
