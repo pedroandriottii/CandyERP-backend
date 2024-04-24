@@ -37,12 +37,6 @@ public class ProductionRepository {
     return jdbcTemplate.update("DELETE FROM Production WHERE id = ?", new Object[] { id });
   }
 
-  // public List<Products> getProductsByProductionId(int id) {
-  // return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM Production_Product
-  // WHERE fk_production_id = ?",
-  // new Object[] { id }, Integer.class);
-  // }
-
   private final RowMapper<Production> useMapper = (rs, rowNum) -> {
     Production production = new Production();
     production.setId(rs.getInt("id"));
