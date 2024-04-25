@@ -33,7 +33,6 @@ public class SupplierController {
     supplier.setId(id);
     return supplierService.update(supplier);
   }
-
   @DeleteMapping("/{id}")
   public void deleteSupplier(@PathVariable("id") int id) {
     supplierService.deleteById(id);

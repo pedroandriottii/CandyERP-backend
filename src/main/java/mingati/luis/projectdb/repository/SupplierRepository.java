@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Repository
@@ -30,8 +32,11 @@ public class SupplierRepository {
         new Object[] { supplier.getName(), supplier.getCnpj(), supplier.getId() });
   }
 
-  public int deleteById(int id) {
-    return jdbcTemplate.update("DELETE FROM Supplier WHERE id = ?", new Object[] { id });
+  @Transactional
+  public void deleteById(int supplierId) {
+    jdbcTemplate.update("DELETE FROM Ingredient_Supplier WHERE fk_Supplier_Id = ?", supplierId);
+
+    jdbcTemplate.update("DELETE FROM Supplier WHERE id = ?", supplierId);
   }
 
   private final RowMapper<Supplier> useMapper = (rs, rowNum) -> {
