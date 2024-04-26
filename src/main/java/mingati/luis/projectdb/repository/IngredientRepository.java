@@ -36,15 +36,16 @@ public class IngredientRepository {
   }
 
   public void deleteById(int id) {
+    jdbcTemplate.update("DELETE FROM Ingredient_Product WHERE fk_Ingredient_id = ?", new Object[] { id });
+
     jdbcTemplate.update("DELETE FROM Ingredient WHERE id = ?", new Object[] { id });
   }
-
   private final RowMapper<Ingredient> IngredientMapper = (rs, rowNum) -> {
     Ingredient ingredient = new Ingredient();
     ingredient.setId(rs.getInt("id"));
     ingredient.setName(rs.getString("name"));
     ingredient.setQuantity(rs.getInt("quantity"));
-    ingredient.setMeasurementUnit(Ingredient.MeasurementUnit.valueOf(rs.getString("measurement_unit")));
+    ingredient.setMeasurementUnit(Ingredient.MeasurementUnit.valueOf(rs.getString("MEASUREMENT_UNIT")));
     return ingredient;
   };
 
