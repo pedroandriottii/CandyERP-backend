@@ -26,9 +26,10 @@ public class IngredientSupplierRepository {
   }
 
   public int save(IngredientSupplier ingredientSupplier) {
+    System.out.println(ingredientSupplier.getFkIngredientId() + ingredientSupplier.getFkSupplierId());
     return jdbcTemplate.update(
-        "INSERT INTO Ingredient_Supplier (fk_supplier_id, fk_ingredient_id) VALUES (?, ?)",
-        new Object[] { ingredientSupplier.getFkSupplierId(), ingredientSupplier.getFkIngredientId() });
+        "INSERT INTO Ingredient_Supplier (fk_Ingredient_Id, fk_Supplier_Id) VALUES (?, ?)",
+        new Object[] { ingredientSupplier.getFkIngredientId(), ingredientSupplier.getFkSupplierId() });
   }
 
   public int update(IngredientSupplier ingredientSupplier) {
