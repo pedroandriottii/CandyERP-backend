@@ -27,6 +27,7 @@ public class IngredientProductController {
 
   @PostMapping
   public IngredientProduct createIngredientProduct(@RequestBody IngredientProduct ingredientProduct) {
+    System.out.println(ingredientProduct.getFkIngredientId() + " " + ingredientProduct.getFkProductId() + " " + ingredientProduct.getQuantity());
     return ingredientProductService.save(ingredientProduct);
   }
 
