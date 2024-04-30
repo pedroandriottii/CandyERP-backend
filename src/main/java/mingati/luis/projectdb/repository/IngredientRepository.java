@@ -31,11 +31,12 @@ public class IngredientRepository {
 
     jdbcTemplate.update(connection -> {
       PreparedStatement ps = connection.prepareStatement(
-          "INSERT INTO Ingredient (name, quantity, measurement_unit) VALUES (?, ?, ?)",
+          "INSERT INTO Ingredient (name, quantity, measurement_unit, cost) VALUES (?, ?, ?, ?)",
           Statement.RETURN_GENERATED_KEYS);
       ps.setString(1, ingredient.getName());
       ps.setInt(2, ingredient.getQuantity());
       ps.setString(3, ingredient.getMeasurementUnit().name());
+      ps.setDouble(4, ingredient.getCost());
       return ps;
     }, keyHolder);
 
@@ -49,8 +50,8 @@ public class IngredientRepository {
 
   public void update(Ingredient ingredient) {
     jdbcTemplate.update(
-        "UPDATE Ingredient SET name = ?, quantity = ?, measurement_unit = ? WHERE id = ?",
-        new Object[] { ingredient.getName(), ingredient.getQuantity(), ingredient.getMeasurementUnit().name(),
+        "UPDATE Ingredient SET name = ?, quantity = ?, measurement_unit = ?, cost = ? WHERE id = ?",
+        new Object[] { ingredient.getName(), ingredient.getQuantity(), ingredient.getMeasurementUnit().name(), ingredient.getCost(),
             ingredient.getId() });
   }
 
@@ -67,6 +68,7 @@ public class IngredientRepository {
     ingredient.setName(rs.getString("name"));
     ingredient.setQuantity(rs.getInt("quantity"));
     ingredient.setMeasurementUnit(Ingredient.MeasurementUnit.valueOf(rs.getString("MEASUREMENT_UNIT")));
+    ingredient.setCost(rs.getDouble("cost"));
     return ingredient;
   };
 

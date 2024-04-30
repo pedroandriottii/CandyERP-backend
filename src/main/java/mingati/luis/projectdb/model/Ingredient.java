@@ -5,6 +5,7 @@ public class Ingredient {
   public String name;
   public int quantity;
   public MeasurementUnit measurement_unit;
+  public double cost;
 
   public enum MeasurementUnit {
     GRAM,
@@ -18,11 +19,12 @@ public class Ingredient {
 
   }
 
-  public Ingredient(int id, String name, int quantity, MeasurementUnit measurement_unit) {
+  public Ingredient(int id, String name, int quantity, MeasurementUnit measurement_unit, double cost) {
     this.id = id;
     this.name = name;
     this.quantity = quantity;
     this.measurement_unit = measurement_unit;
+    this.cost = cost;
   }
 
   public int getId() {
@@ -55,5 +57,13 @@ public class Ingredient {
 
   public void setMeasurementUnit(MeasurementUnit measurement_unit) {
     this.measurement_unit = measurement_unit;
+  }
+
+  public double getCost() {
+    return cost;
+  }
+
+  public void setCost(double cost) {
+    this.cost = cost;
   }
 }
