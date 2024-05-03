@@ -8,12 +8,12 @@ public class IngredientProduct {
 
   @JsonProperty("fk_Ingredient_id")
   private int fk_ingredient_id;
-  private int quantity;
+  private double quantity;
 
   public IngredientProduct() {
   }
 
-  public IngredientProduct(int fk_product_id, int fk_ingredient_id, int quantity) {
+  public IngredientProduct(int fk_product_id, int fk_ingredient_id, double quantity) {
     this.fk_product_id = fk_product_id;
     this.fk_ingredient_id = fk_ingredient_id;
     this.quantity = quantity;
@@ -35,11 +35,11 @@ public class IngredientProduct {
     this.fk_ingredient_id = fk_ingredient_id;
   }
 
-  public int getQuantity() {
+  public double getQuantity() {
     return quantity;
   }
 
-  public void setQuantity(int quantity) {
+  public void setQuantity(double quantity) {
     this.quantity = quantity;
   }
 }

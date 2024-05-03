@@ -46,9 +46,9 @@ public class IngredientProductRepository {
 
   public final RowMapper<IngredientProduct> IngredientProductMapper = (rs, rowNum) -> {
     IngredientProduct ingredientProduct = new IngredientProduct();
-    ingredientProduct.setFkProductId(rs.getInt("fk_product_id"));
-    ingredientProduct.setFkIngredientId(rs.getInt("fk_ingredient_id"));
-    ingredientProduct.setQuantity(rs.getInt("quantity"));
+    ingredientProduct.setFkProductId(rs.getInt("fk_Product_id"));
+    ingredientProduct.setFkIngredientId(rs.getInt("fk_Ingredient_id"));
+    ingredientProduct.setQuantity(rs.getDouble("quantity"));
     return ingredientProduct;
   };
 
