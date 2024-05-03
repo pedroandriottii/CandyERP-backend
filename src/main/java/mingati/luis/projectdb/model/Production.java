@@ -4,14 +4,17 @@ import java.util.Date;
 
 public class Production {
   private int id;
+
+  private String name;
   private Date start_date;
   private Date end_date;
 
   public Production() {
   }
 
-  public Production(int id, Date start_date, Date end_date) {
+  public Production(String name, int id, Date start_date, Date end_date) {
     this.id = id;
+    this.name = name;
     this.start_date = start_date;
     this.end_date = end_date;
   }
@@ -23,6 +26,10 @@ public class Production {
   public void setId(int id) {
     this.id = id;
   }
+
+  public String getName() { return name; }
+
+  public void setName(String name) { this.name = name; }
 
   public Date getStart_date() {
     return start_date;

@@ -27,6 +27,7 @@ public class ProductionProductController {
 
   @PostMapping
   public ProductionProduct createProductionProduct(@RequestBody ProductionProduct productionProduct) {
+    System.out.println(productionProduct.getFkProductId() + " " + productionProduct.getFkProductionId() + " " + productionProduct.getQuantity());
     return productionProductService.save(productionProduct);
   }
 

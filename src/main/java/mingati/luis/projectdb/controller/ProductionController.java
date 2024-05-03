@@ -26,6 +26,8 @@ public class ProductionController {
 
   @PostMapping
   public Production createProduction(@RequestBody Production production) {
+    System.out.println(production.getName() + production.getStart_date() + production.getEnd_date());
+
     return productionService.save(production);
   }
 

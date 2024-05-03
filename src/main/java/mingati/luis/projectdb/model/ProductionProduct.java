@@ -1,7 +1,11 @@
 package mingati.luis.projectdb.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class ProductionProduct {
+  @JsonProperty("fk_Product_id")
   private int fk_product_id;
+  @JsonProperty("fk_Production_id")
   private int fk_production_id;
   private int quantity;
 
