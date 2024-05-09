@@ -16,24 +16,24 @@ public class NfeRepository {
   private JdbcTemplate jdbcTemplate;
 
   public List<Nfe> findAll() {
-    return jdbcTemplate.query("SELECT * FROM Nfe", useMapper);
+    return jdbcTemplate.query("SELECT * FROM NFE", useMapper);
   }
 
   public Nfe findById(int id) {
-    return jdbcTemplate.queryForObject("SELECT * FROM Nfe WHERE id = ?", useMapper, new Object[] { id });
+    return jdbcTemplate.queryForObject("SELECT * FROM NFE WHERE id = ?", useMapper, new Object[] { id });
   }
 
   public int save(Nfe nfe) {
-    return jdbcTemplate.update("INSERT INTO Nfe (serial_number) VALUES (?)", new Object[] { nfe.getSerial_number() });
+    return jdbcTemplate.update("INSERT INTO NFE (serial_number) VALUES (?)", new Object[] { nfe.getSerial_number() });
   }
 
   public int update(Nfe nfe) {
-    return jdbcTemplate.update("UPDATE Nfe SET serial_number = ? WHERE id = ?",
+    return jdbcTemplate.update("UPDATE NFE SET serial_number = ? WHERE id = ?",
         new Object[] { nfe.getSerial_number(), nfe.getId() });
   }
 
   public int deleteById(int id) {
-    return jdbcTemplate.update("DELETE FROM Nfe WHERE id = ?", new Object[] { id });
+    return jdbcTemplate.update("DELETE FROM NFE WHERE id = ?", new Object[] { id });
   }
 
   private final RowMapper<Nfe> useMapper = (rs, rowNum) -> {
