@@ -22,17 +22,16 @@ public class ProductService {
   }
 
   public Product save(Product product) {
-    productRepository.save(product);
-    return product;
+    int id = productRepository.save(product);
+    return productRepository.findById(id);
   }
 
   public Product update(Product product) {
     productRepository.update(product);
-    return product;
+    return productRepository.findById(product.getId());
   }
 
   public void deleteById(int id) {
     productRepository.deleteById(id);
   }
-
 }

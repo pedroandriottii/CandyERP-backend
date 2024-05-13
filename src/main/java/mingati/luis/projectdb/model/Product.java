@@ -1,25 +1,16 @@
 package mingati.luis.projectdb.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.List;
 
 public class Product {
   private int id;
-  private double price;
   private String name;
+  private double price;
   private int quantity;
-  @JsonProperty("fk_detail_id")
-  private int fk_detail_id;
+  private int fkDetailId;
+  private List<Ingredient> ingredients;
 
-  public Product() {
-  }
-
-  public Product(int id, double price, String name, int quantity, int fk_detail_id) {
-    this.id = id;
-    this.price = price;
-    this.name = name;
-    this.quantity = quantity;
-    this.fk_detail_id = fk_detail_id;
-  }
+  // Getters e setters
 
   public int getId() {
     return id;
@@ -29,20 +20,20 @@ public class Product {
     this.id = id;
   }
 
-  public double getPrice() {
-    return price;
-  }
-
-  public void setPrice(double price) {
-    this.price = price;
-  }
-
   public String getName() {
     return name;
   }
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public double getPrice() {
+    return price;
+  }
+
+  public void setPrice(double price) {
+    this.price = price;
   }
 
   public int getQuantity() {
@@ -54,10 +45,18 @@ public class Product {
   }
 
   public int getFkDetailId() {
-    return fk_detail_id;
+    return fkDetailId;
   }
 
-  public void setFkDetailId(int fk_detail_id) {
-    this.fk_detail_id = fk_detail_id;
+  public void setFkDetailId(int fkDetailId) {
+    this.fkDetailId = fkDetailId;
+  }
+
+  public List<Ingredient> getIngredients() {
+    return ingredients;
+  }
+
+  public void setIngredients(List<Ingredient> ingredients) {
+    this.ingredients = ingredients;
   }
 }
