@@ -22,13 +22,13 @@ public class IngredientService {
   }
 
   public Ingredient save(Ingredient ingredient) {
-    ingredientRepository.save(ingredient);
-    return ingredient;
+    int id = ingredientRepository.save(ingredient);
+    return ingredientRepository.findById(id);
   }
 
   public Ingredient update(Ingredient ingredient) {
     ingredientRepository.update(ingredient);
-    return ingredient;
+    return ingredientRepository.findById(ingredient.getId());
   }
 
   public void deleteById(int id) {

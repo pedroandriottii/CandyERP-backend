@@ -1,11 +1,17 @@
 package mingati.luis.projectdb.repository;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import mingati.luis.projectdb.model.Nfe;
@@ -24,7 +30,19 @@ public class NfeRepository {
   }
 
   public int save(Nfe nfe) {
-    return jdbcTemplate.update("INSERT INTO NFE (serial_number) VALUES (?)", new Object[] { nfe.getSerial_number() });
+    KeyHolder keyHolder = new GeneratedKeyHolder();
+    PreparedStatementCreator preparedStatementCreator = connection -> {
+      PreparedStatement ps = connection.prepareStatement(
+              "INSERT INTO NFE (serial_number) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
+      ps.setString(1, nfe.getSerial_number());
+      return ps;
+    };
+
+    jdbcTemplate.update(preparedStatementCreator, keyHolder);
+    int generatedId = Objects.requireNonNull(keyHolder.getKey()).intValue();
+    System.out.println("Generated ID: " + generatedId);
+    nfe.setId(generatedId);
+    return generatedId;
   }
 
   public int update(Nfe nfe) {

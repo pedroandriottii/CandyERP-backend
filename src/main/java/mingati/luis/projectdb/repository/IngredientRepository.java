@@ -12,6 +12,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import mingati.luis.projectdb.model.Ingredient;
+import mingati.luis.projectdb.model.Supplier;
 
 @Repository
 public class IngredientRepository {
@@ -19,11 +20,29 @@ public class IngredientRepository {
   private JdbcTemplate jdbcTemplate;
 
   public List<Ingredient> findAll() {
-    return jdbcTemplate.query("SELECT * FROM Ingredient", IngredientMapper);
+    List<Ingredient> ingredients = jdbcTemplate.query("SELECT * FROM Ingredient", IngredientMapper);
+    for (Ingredient ingredient : ingredients) {
+      List<Supplier> suppliers = jdbcTemplate.query(
+              "SELECT s.* FROM Supplier s INNER JOIN Ingredient_Supplier isupp ON s.id = isupp.fk_Supplier_Id WHERE isupp.fk_Ingredient_Id = ?",
+              SupplierMapper,
+              new Object[] { ingredient.getId() }
+      );
+      ingredient.setSuppliers(suppliers);
+    }
+    return ingredients;
   }
 
   public Ingredient findById(int id) {
-    return jdbcTemplate.queryForObject("SELECT * FROM Ingredient WHERE id = ?", IngredientMapper, new Object[] { id });
+    Ingredient ingredient = jdbcTemplate.queryForObject("SELECT * FROM Ingredient WHERE id = ?", IngredientMapper, new Object[] { id });
+    if (ingredient != null) {
+      List<Supplier> suppliers = jdbcTemplate.query(
+              "SELECT s.* FROM Supplier s INNER JOIN Ingredient_Supplier isupp ON s.id = isupp.fk_Supplier_Id WHERE isupp.fk_Ingredient_Id = ?",
+              SupplierMapper,
+              new Object[] { id }
+      );
+      ingredient.setSuppliers(suppliers);
+    }
+    return ingredient;
   }
 
   public int save(Ingredient ingredient) {
@@ -31,8 +50,8 @@ public class IngredientRepository {
 
     jdbcTemplate.update(connection -> {
       PreparedStatement ps = connection.prepareStatement(
-          "INSERT INTO Ingredient (name, quantity, measurement_unit, cost) VALUES (?, ?, ?, ?)",
-          Statement.RETURN_GENERATED_KEYS);
+              "INSERT INTO Ingredient (name, quantity, measurement_unit, cost) VALUES (?, ?, ?, ?)",
+              Statement.RETURN_GENERATED_KEYS);
       ps.setString(1, ingredient.getName());
       ps.setInt(2, ingredient.getQuantity());
       ps.setString(3, ingredient.getMeasurementUnit().name());
@@ -50,9 +69,9 @@ public class IngredientRepository {
 
   public void update(Ingredient ingredient) {
     jdbcTemplate.update(
-        "UPDATE Ingredient SET name = ?, quantity = ?, measurement_unit = ?, cost = ? WHERE id = ?",
-        new Object[] { ingredient.getName(), ingredient.getQuantity(), ingredient.getMeasurementUnit().name(), ingredient.getCost(),
-            ingredient.getId() });
+            "UPDATE Ingredient SET name = ?, quantity = ?, measurement_unit = ?, cost = ? WHERE id = ?",
+            new Object[] { ingredient.getName(), ingredient.getQuantity(), ingredient.getMeasurementUnit().name(), ingredient.getCost(),
+                    ingredient.getId() });
   }
 
   public void deleteById(int id) {
@@ -67,9 +86,16 @@ public class IngredientRepository {
     ingredient.setId(rs.getInt("id"));
     ingredient.setName(rs.getString("name"));
     ingredient.setQuantity(rs.getInt("quantity"));
-    ingredient.setMeasurementUnit(Ingredient.MeasurementUnit.valueOf(rs.getString("MEASUREMENT_UNIT")));
+    ingredient.setMeasurementUnit(Ingredient.MeasurementUnit.valueOf(rs.getString("measurement_unit")));
     ingredient.setCost(rs.getDouble("cost"));
     return ingredient;
   };
 
+  private final RowMapper<Supplier> SupplierMapper = (rs, rowNum) -> {
+    Supplier supplier = new Supplier();
+    supplier.setId(rs.getInt("id"));
+    supplier.setName(rs.getString("name"));
+    supplier.setCnpj(rs.getString("cnpj"));
+    return supplier;
+  };
 }

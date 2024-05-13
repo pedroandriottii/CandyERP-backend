@@ -29,6 +29,7 @@ public class ProductDetailSaleController {
 
   @PostMapping
   public ProductDetailSale createProductDetailSale(@RequestBody ProductDetailSale productDetailSale) {
+    System.out.println(productDetailSale.getFkDetailId() + " " + productDetailSale.getFkProductId() + " " + productDetailSale.getFkSaleOrderId() + " " + productDetailSale.getQuantity());
     return productDetailSaleService.save(productDetailSale);
   }
 

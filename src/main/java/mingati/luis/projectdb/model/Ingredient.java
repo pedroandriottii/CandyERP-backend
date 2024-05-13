@@ -1,11 +1,14 @@
 package mingati.luis.projectdb.model;
 
+import java.util.List;
+
 public class Ingredient {
-  public int id;
-  public String name;
-  public int quantity;
-  public MeasurementUnit measurement_unit;
-  public double cost;
+  private int id;
+  private String name;
+  private int quantity;
+  private MeasurementUnit measurement_unit;
+  private double cost;
+  private List<Supplier> suppliers;
 
   public enum MeasurementUnit {
     GRAM,
@@ -16,7 +19,6 @@ public class Ingredient {
   }
 
   public Ingredient() {
-
   }
 
   public Ingredient(int id, String name, int quantity, MeasurementUnit measurement_unit, double cost) {
@@ -65,5 +67,13 @@ public class Ingredient {
 
   public void setCost(double cost) {
     this.cost = cost;
+  }
+
+  public List<Supplier> getSuppliers() {
+    return suppliers;
+  }
+
+  public void setSuppliers(List<Supplier> suppliers) {
+    this.suppliers = suppliers;
   }
 }
