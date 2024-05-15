@@ -1,5 +1,7 @@
 package mingati.luis.projectdb.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
 public class Product {
@@ -7,6 +9,7 @@ public class Product {
   private String name;
   private double price;
   private int quantity;
+  @JsonProperty("fk_Detail_id")
   private int fkDetailId;
   private List<Ingredient> ingredients;
 

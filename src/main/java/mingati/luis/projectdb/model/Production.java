@@ -1,6 +1,7 @@
 package mingati.luis.projectdb.model;
 
 import java.util.Date;
+import java.util.List;
 
 public class Production {
   private int id;
@@ -8,6 +9,7 @@ public class Production {
   private String name;
   private Date start_date;
   private Date end_date;
+  private List<Product> products;
 
   public Production() {
   }
@@ -46,5 +48,7 @@ public class Production {
   public void setEnd_date(Date end_date) {
     this.end_date = end_date;
   }
+  public List<Product> getProducts() { return products; }
 
+  public void setProducts(List<Product> products) { this.products = products; }
 }

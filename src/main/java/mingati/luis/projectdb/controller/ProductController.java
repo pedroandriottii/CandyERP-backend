@@ -26,6 +26,7 @@ public class ProductController {
 
   @PostMapping
   public Product createProduct(@RequestBody Product product) {
+    System.out.println(product.getFkDetailId());
     return productService.save(product);
   }
 

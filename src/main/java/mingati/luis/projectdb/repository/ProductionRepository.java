@@ -12,6 +12,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import mingati.luis.projectdb.model.Production;
+import mingati.luis.projectdb.model.Product;
 
 @Repository
 public class ProductionRepository {
@@ -19,11 +20,20 @@ public class ProductionRepository {
   private JdbcTemplate jdbcTemplate;
 
   public List<Production> findAll() {
-    return jdbcTemplate.query("SELECT * FROM Production", useMapper);
+    List<Production> productions = jdbcTemplate.query("SELECT * FROM Production", productionMapper);
+    for (Production production : productions) {
+      List<Product> products = findProductsByProductionId(production.getId());
+      production.setProducts(products);
+    }
+    return productions;
   }
-
   public Production findById(int id) {
-    return jdbcTemplate.queryForObject("SELECT * FROM Production WHERE id = ?", useMapper, new Object[] { id });
+    Production production = jdbcTemplate.queryForObject("SELECT * FROM Production WHERE id = ?", productionMapper, id);
+    if (production != null) {
+      List<Product> products = findProductsByProductionId(production.getId());
+      production.setProducts(products);
+    }
+    return production;
   }
 
   public int save(Production production) {
@@ -47,14 +57,14 @@ public class ProductionRepository {
 
   public int update(Production production) {
     return jdbcTemplate.update("UPDATE Production SET start_date = ?, end_date = ?, name = ? WHERE id = ?",
-        new Object[] { production.getStart_date(), production.getEnd_date(), production.getName(), production.getId() });
+            new Object[] { production.getStart_date(), production.getEnd_date(), production.getName(), production.getId() });
   }
 
   public int deleteById(int id) {
     return jdbcTemplate.update("DELETE FROM Production WHERE id = ?", new Object[] { id });
   }
 
-  private final RowMapper<Production> useMapper = (rs, rowNum) -> {
+  private final RowMapper<Production> productionMapper = (rs, rowNum) -> {
     Production production = new Production();
     production.setId(rs.getInt("id"));
     production.setStart_date(rs.getDate("start_date"));
@@ -63,4 +73,25 @@ public class ProductionRepository {
     return production;
   };
 
+  private final RowMapper<Product> productMapper = (rs, rowNum) -> {
+    Product product = new Product();
+    product.setId(rs.getInt("id"));
+    product.setName(rs.getString("name"));
+    product.setPrice(rs.getDouble("price"));
+    product.setQuantity(rs.getInt("quantity"));
+    product.setFkDetailId(rs.getInt("fk_detail_id"));
+    return product;
+  };
+
+
+  private List<Product> findProductsByProductionId(int productionId) {
+    List<Product> products = jdbcTemplate.query(
+            "SELECT p.* FROM Product p " +
+                    "INNER JOIN Production_Product pp ON p.id = pp.fk_Product_id " +
+                    "WHERE pp.fk_Production_id = ?",
+            new Object[]{productionId},
+            productMapper
+    );
+    return products;
+  }
 }
