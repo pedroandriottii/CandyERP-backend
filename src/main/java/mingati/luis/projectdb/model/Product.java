@@ -9,11 +9,10 @@ public class Product {
   private String name;
   private double price;
   private int quantity;
-  @JsonProperty("fk_Detail_id")
-  private int fkDetailId;
+  @JsonProperty("fk_product_id")
+  private int fkProductId;
   private List<Ingredient> ingredients;
 
-  // Getters e setters
 
   public int getId() {
     return id;
@@ -47,12 +46,12 @@ public class Product {
     this.quantity = quantity;
   }
 
-  public int getFkDetailId() {
-    return fkDetailId;
+  public int getFkProductId() {
+    return fkProductId;
   }
 
-  public void setFkDetailId(int fkDetailId) {
-    this.fkDetailId = fkDetailId;
+  public void setFkProductId(int fkProductId) {
+    this.fkProductId = fkProductId;
   }
 
   public List<Ingredient> getIngredients() {

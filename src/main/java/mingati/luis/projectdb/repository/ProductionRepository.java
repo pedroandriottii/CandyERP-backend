@@ -14,6 +14,8 @@ import org.springframework.stereotype.Repository;
 import mingati.luis.projectdb.model.Production;
 import mingati.luis.projectdb.model.Product;
 
+import mingati.luis.projectdb.model.Production.ProductionStatus;
+
 @Repository
 public class ProductionRepository {
   @Autowired
@@ -41,11 +43,12 @@ public class ProductionRepository {
 
     jdbcTemplate.update(connection -> {
       PreparedStatement ps = connection.prepareStatement(
-              "INSERT INTO Production (start_date, end_date, name) VALUES (?, ?, ?)",
+              "INSERT INTO Production (start_date, end_date, name, status) VALUES (?, ?, ?, ?)",
               Statement.RETURN_GENERATED_KEYS);
       ps.setDate(1, new java.sql.Date(production.getStart_date().getTime()));
       ps.setDate(2, new java.sql.Date(production.getEnd_date().getTime()));
       ps.setString(3, production.getName());
+      ps.setString(4, production.getStatus().name());
       return ps;
     }, keyHolder);
 
@@ -56,8 +59,8 @@ public class ProductionRepository {
   }
 
   public int update(Production production) {
-    return jdbcTemplate.update("UPDATE Production SET start_date = ?, end_date = ?, name = ? WHERE id = ?",
-            new Object[] { production.getStart_date(), production.getEnd_date(), production.getName(), production.getId() });
+    return jdbcTemplate.update("UPDATE Production SET start_date = ?, end_date = ?, name = ?, status = ? WHERE id = ?",
+            new Object[] { production.getStart_date(), production.getEnd_date(), production.getName(), production.getId(), production.getStatus() });
   }
 
   public int deleteById(int id) {
@@ -70,6 +73,7 @@ public class ProductionRepository {
     production.setStart_date(rs.getDate("start_date"));
     production.setEnd_date(rs.getDate("end_date"));
     production.setName(rs.getString("name"));
+    production.setStatus(Production.ProductionStatus.valueOf(rs.getString("status")));
     return production;
   };
 
@@ -79,7 +83,6 @@ public class ProductionRepository {
     product.setName(rs.getString("name"));
     product.setPrice(rs.getDouble("price"));
     product.setQuantity(rs.getInt("quantity"));
-    product.setFkDetailId(rs.getInt("fk_detail_id"));
     return product;
   };
 

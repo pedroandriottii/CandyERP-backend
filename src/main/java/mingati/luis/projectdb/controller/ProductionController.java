@@ -26,7 +26,7 @@ public class ProductionController {
 
   @PostMapping
   public Production createProduction(@RequestBody Production production) {
-    System.out.println(production.getName() + production.getStart_date() + production.getEnd_date());
+    System.out.println(production.getName() + production.getStart_date() + production.getEnd_date() + production.getStatus());
 
     return productionService.save(production);
   }
@@ -41,11 +41,5 @@ public class ProductionController {
   public void deleteProduction(@PathVariable("id") int id) {
     productionService.deleteById(id);
   }
-
-  // @GetMapping("/product/{id}/products")
-  // public List<Production> getProductionsByProductId(@PathVariable("id") int id)
-  // {
-  // return productionService.getProductsByProductionId(id);
-  // }
 
 }

@@ -16,6 +16,7 @@ import mingati.luis.projectdb.model.Ingredient;
 
 @Repository
 public class ProductRepository {
+
   @Autowired
   private JdbcTemplate jdbcTemplate;
 
@@ -55,13 +56,17 @@ public class ProductRepository {
     KeyHolder keyHolder = new GeneratedKeyHolder();
     jdbcTemplate.update(connection -> {
       PreparedStatement ps = connection.prepareStatement(
-              "INSERT INTO Product (name, price, quantity, fk_detail_id) VALUES (?, ?, ?, ?)",
+              "INSERT INTO Product (name, price, quantity, fk_product_id) VALUES (?, ?, ?, ?)",
               Statement.RETURN_GENERATED_KEYS
       );
       ps.setString(1, product.getName());
       ps.setDouble(2, product.getPrice());
       ps.setInt(3, product.getQuantity());
-      ps.setInt(4, product.getFkDetailId());
+      if (product.getFkProductId() != null) {
+        ps.setInt(4, product.getFkProductId());
+      } else {
+        ps.setNull(4, java.sql.Types.INTEGER);
+      }
       return ps;
     }, keyHolder);
     Number key = keyHolder.getKey();
@@ -73,8 +78,9 @@ public class ProductRepository {
 
   public void update(Product product) {
     jdbcTemplate.update(
-            "UPDATE Product SET name = ?, price = ?, quantity = ?, fk_detail_id = ? WHERE id = ?",
-            product.getName(), product.getPrice(), product.getQuantity(), product.getFkDetailId(), product.getId()
+            "UPDATE Product SET name = ?, price = ?, quantity = ?, fk_product_id = ? WHERE id = ?",
+            product.getName(), product.getPrice(), product.getQuantity(),
+            product.getFkProductId() != null ? product.getFkProductId() : null, product.getId()
     );
   }
 
@@ -88,7 +94,7 @@ public class ProductRepository {
     product.setName(rs.getString("name"));
     product.setPrice(rs.getDouble("price"));
     product.setQuantity(rs.getInt("quantity"));
-    product.setFkDetailId(rs.getInt("fk_detail_id"));
+    product.setFkProductId((Integer) rs.getObject("fk_product_id"));
     return product;
   };
 
