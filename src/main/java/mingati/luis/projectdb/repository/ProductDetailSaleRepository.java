@@ -45,6 +45,17 @@ public class ProductDetailSaleRepository {
         new Object[] { fk_sale_order_id });
   }
 
+  public int deleteBySaleProductDetail(int fk_sale_order_id, int fk_product_id, int fk_detail_id) {
+    return jdbcTemplate.update("DELETE FROM Product_Detail_Sale WHERE fk_sale_order_id = ? AND fk_product_id = ? AND fk_detail_id = ?",
+            new Object[] { fk_sale_order_id, fk_product_id, fk_detail_id });
+  }
+
+  public List<ProductDetailSale> findBySaleOrderId(int fk_sale_id) {
+    return jdbcTemplate.query(
+            "SELECT fk_sale_order_id, fk_product_id, fk_detail_id, quantity FROM Product_Detail_Sale WHERE fk_sale_order_id = ?",
+            ProductDetailSaleMapper, new Object[] { fk_sale_id });
+  }
+
   public final RowMapper<ProductDetailSale> ProductDetailSaleMapper = (rs, rowNum) -> {
     ProductDetailSale productDetailSale = new ProductDetailSale();
     productDetailSale.setFkSaleOrderId(rs.getInt("fk_sale_order_id"));

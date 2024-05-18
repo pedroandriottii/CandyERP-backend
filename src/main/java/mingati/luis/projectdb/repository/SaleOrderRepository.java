@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Objects;
 
+import mingati.luis.projectdb.model.ProductDetailSale;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -19,13 +20,31 @@ public class SaleOrderRepository {
   private JdbcTemplate jdbcTemplate;
 
   public List<SaleOrder> findAll() {
-    return jdbcTemplate.query("SELECT * FROM Sale_Order", saleOrderMapper);
+    List<SaleOrder> saleOrders = jdbcTemplate.query("SELECT * FROM Sale_Order", saleOrderMapper);
+    for (SaleOrder saleOrder : saleOrders) {
+      List<ProductDetailSale> productDetails = findProductDetailsBySaleOrderId(saleOrder.getId());
+      saleOrder.setProductDetails(productDetails);
+    }
+    return saleOrders;
   }
 
   public SaleOrder findById(int id) {
-    return jdbcTemplate.queryForObject("SELECT * FROM Sale_Order WHERE id = ?", saleOrderMapper, new Object[] { id });
+    SaleOrder saleOrder = jdbcTemplate.queryForObject("SELECT * FROM Sale_Order WHERE id = ?", saleOrderMapper, id);
+    if (saleOrder != null) {
+      List<ProductDetailSale> productDetails = findProductDetailsBySaleOrderId(saleOrder.getId());
+      saleOrder.setProductDetails(productDetails);
+    }
+    return saleOrder;
   }
 
+  private List<ProductDetailSale> findProductDetailsBySaleOrderId(int saleOrderId) {
+    List<ProductDetailSale> productDetails = jdbcTemplate.query(
+            "SELECT * FROM Product_Detail_Sale WHERE fk_sale_order_id = ?",
+            new Object[]{saleOrderId},
+            productDetailSaleMapper
+    );
+    return productDetails;
+  }
 
   public int save(SaleOrder saleOrder) {
     KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -70,5 +89,14 @@ public class SaleOrderRepository {
     saleOrder.setFk_client_id(rs.getInt("fk_client_id"));
     saleOrder.setFk_nfe_id(rs.getInt("fk_nfe_id"));
     return saleOrder;
+  };
+
+  private final RowMapper<ProductDetailSale> productDetailSaleMapper = (rs, rowNum) -> {
+    ProductDetailSale productDetailSale = new ProductDetailSale();
+    productDetailSale.setFkProductId(rs.getInt("fk_product_id"));
+    productDetailSale.setFkSaleOrderId(rs.getInt("fk_sale_order_id"));
+    productDetailSale.setFkDetailId(rs.getInt("fk_detail_id"));
+    productDetailSale.setQuantity(rs.getInt("quantity"));
+    return productDetailSale;
   };
 }

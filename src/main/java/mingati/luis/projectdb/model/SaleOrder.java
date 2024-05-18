@@ -1,6 +1,7 @@
 package mingati.luis.projectdb.model;
 
 import java.util.Date;
+import java.util.List;
 
 public class SaleOrder {
   private int id;
@@ -11,6 +12,7 @@ public class SaleOrder {
   private PaymentMethod payment_method;
   private int fk_client_id;
   private int fk_nfe_id;
+  private List<ProductDetailSale> productDetails;
 
   public enum Status {
     COMPLETED,
@@ -33,7 +35,7 @@ public class SaleOrder {
   }
 
   public SaleOrder(int id, Date date, double total_price, Status status, OrderType order_type,
-      PaymentMethod payment_method, int fk_client_id, int fk_nfe_id) {
+                   PaymentMethod payment_method, int fk_client_id, int fk_nfe_id, List<ProductDetailSale> productDetails) {
     this.id = id;
     this.date = date;
     this.total_price = total_price;
@@ -42,6 +44,7 @@ public class SaleOrder {
     this.payment_method = payment_method;
     this.fk_client_id = fk_client_id;
     this.fk_nfe_id = fk_nfe_id;
+    this.productDetails = productDetails;
   }
 
   public int getId() {
@@ -108,4 +111,11 @@ public class SaleOrder {
     this.fk_nfe_id = fk_nfe_id;
   }
 
+  public List<ProductDetailSale> getProductDetails() {
+    return productDetails;
+  }
+
+  public void setProductDetails(List<ProductDetailSale> productDetails) {
+    this.productDetails = productDetails;
+  }
 }

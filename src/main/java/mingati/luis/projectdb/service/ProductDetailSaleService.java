@@ -33,7 +33,15 @@ public class ProductDetailSaleService {
     return productDetailSale;
   }
 
+  public List<ProductDetailSale> findBySaleOrderId(int fk_sale_id) {
+    return productDetailSaleRepository.findBySaleOrderId(fk_sale_id);
+  }
   public void deleteBySaleOrderId(int fk_sale_id) {
     productDetailSaleRepository.deleteBySaleOrderId(fk_sale_id);
   }
+
+  public void deleteBySaleProductDetail(int fk_sale_id, int fk_product_id, int fk_detail_id) {
+    productDetailSaleRepository.deleteBySaleProductDetail(fk_sale_id, fk_product_id, fk_detail_id);
+  }
+
 }

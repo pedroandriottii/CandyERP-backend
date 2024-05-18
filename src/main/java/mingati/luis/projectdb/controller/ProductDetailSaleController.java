@@ -14,6 +14,11 @@ public class ProductDetailSaleController {
   @Autowired
   private ProductDetailSaleService productDetailSaleService;
 
+  @GetMapping("/{fk_sale_id}")
+  public List<ProductDetailSale> getProductDetailSalesBySaleOrderId(@PathVariable("fk_sale_id") int fk_sale_id) {
+    return productDetailSaleService.findBySaleOrderId(fk_sale_id);
+  }
+
   @GetMapping
   public List<ProductDetailSale> getAllProductDetailSaleServices() {
     return productDetailSaleService.findAll();
@@ -30,6 +35,7 @@ public class ProductDetailSaleController {
   @PostMapping
   public ProductDetailSale createProductDetailSale(@RequestBody ProductDetailSale productDetailSale) {
     System.out.println(productDetailSale.getFkDetailId() + " " + productDetailSale.getFkProductId() + " " + productDetailSale.getFkSaleOrderId() + " " + productDetailSale.getQuantity());
+    System.out.println("create");
     return productDetailSaleService.save(productDetailSale);
   }
 
@@ -37,14 +43,26 @@ public class ProductDetailSaleController {
   public ProductDetailSale updateProductDetailSale(@PathVariable("fk_sale_id") int fk_sale_id,
       @PathVariable("fk_product_id") int fk_product_id, @PathVariable("fk_detail_id") int fk_detail_id,
       @RequestBody ProductDetailSale productDetailSale) {
+    System.out.println("edit");
     productDetailSale.setFkSaleOrderId(fk_sale_id);
     productDetailSale.setFkProductId(fk_product_id);
     productDetailSale.setFkDetailId(fk_detail_id);
     return productDetailSaleService.update(productDetailSale);
   }
 
-  @DeleteMapping("/{fk_sale_id}")
-  public void deleteProductDetailSale(@PathVariable("fk_sale_id") int fk_sale_id) {
-    productDetailSaleService.deleteBySaleOrderId(fk_sale_id);
+
+//  @DeleteMapping("/{fk_sale_id}")
+//  public void deleteProductDetailSale(@PathVariable("fk_sale_id") int fk_sale_id) {
+//    productDetailSaleService.deleteBySaleOrderId(fk_sale_id);
+//  }
+
+  @DeleteMapping("/{fk_sale_id}/{fk_product_id}/{fk_detail_id}")
+  public void deleteProductDetailSale(@PathVariable("fk_sale_id") int fk_sale_id,
+                                      @PathVariable("fk_product_id") int fk_product_id,
+                                      @PathVariable("fk_detail_id") int fk_detail_id) {
+    System.out.println("delete");
+
+    productDetailSaleService.deleteBySaleProductDetail(fk_sale_id, fk_product_id, fk_detail_id);
   }
+
 }
