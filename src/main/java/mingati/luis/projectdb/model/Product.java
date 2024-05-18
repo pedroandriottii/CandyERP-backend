@@ -10,7 +10,7 @@ public class Product {
   private double price;
   private int quantity;
   @JsonProperty("fk_product_id")
-  private int fkProductId;
+  private Integer fkProductId;
   private List<Ingredient> ingredients;
 
 
@@ -46,11 +46,11 @@ public class Product {
     this.quantity = quantity;
   }
 
-  public int getFkProductId() {
+  public Integer getFkProductId() {
     return fkProductId;
   }
 
-  public void setFkProductId(int fkProductId) {
+  public void setFkProductId(Integer fkProductId) {
     this.fkProductId = fkProductId;
   }
 

@@ -80,7 +80,7 @@ public class ProductRepository {
     jdbcTemplate.update(
             "UPDATE Product SET name = ?, price = ?, quantity = ?, fk_product_id = ? WHERE id = ?",
             product.getName(), product.getPrice(), product.getQuantity(),
-            product.getFkProductId() != null ? product.getFkProductId() : null, product.getId()
+            product.getFkProductId(), product.getId()
     );
   }
 
