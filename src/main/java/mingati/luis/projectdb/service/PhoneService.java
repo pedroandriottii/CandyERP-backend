@@ -34,5 +34,4 @@ public class PhoneService {
   public void deleteById(int id) {
     phoneRepository.deleteById(id);
   }
-
 }

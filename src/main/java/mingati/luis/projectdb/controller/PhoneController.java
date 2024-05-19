@@ -11,27 +11,31 @@ import mingati.luis.projectdb.service.PhoneService;
 @RestController
 @RequestMapping("/phones")
 public class PhoneController {
-  @Autowired
-  private PhoneService phoneService;
 
-  @GetMapping
-  public List<Phone> getAllPhones() {
-    return phoneService.findAll();
-  }
+    @Autowired
+    private PhoneService phoneService;
 
-  @PostMapping
-  public Phone createPhone(@RequestBody Phone phone) {
-    return phoneService.save(phone);
-  }
+    @GetMapping
+    public List<Phone> getAllPhones() {
+        return phoneService.findAll();
+    }
 
-  @PutMapping("/{id}")
-  public Phone updatePhone(@PathVariable("id") int id, @RequestBody Phone phone) {
-    phone.setId(id);
-    return phoneService.update(phone);
-  }
+    @PostMapping
+    public Phone createPhone(@RequestBody Phone phone) {
+        System.out.println("Creating phone with details: " + phone.toString());
+        Phone createdPhone = phoneService.save(phone);
+        System.out.println("Phone created with ID: " + createdPhone.getId());
+        return createdPhone;
+    }
 
-  @DeleteMapping("/{id}")
-  public void deletePhone(@PathVariable("id") int id) {
-    phoneService.deleteById(id);
-  }
+    @PutMapping("/{id}")
+    public Phone updatePhone(@PathVariable("id") int id, @RequestBody Phone phone) {
+        phone.setId(id);
+        return phoneService.update(phone);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deletePhone(@PathVariable("id") int id) {
+        phoneService.deleteById(id);
+    }
 }

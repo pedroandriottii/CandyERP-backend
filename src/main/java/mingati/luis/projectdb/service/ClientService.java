@@ -4,32 +4,32 @@ import mingati.luis.projectdb.model.Client;
 import mingati.luis.projectdb.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
 public class ClientService {
     @Autowired
-    private ClientRepository userRepository;
+    private ClientRepository clientRepository;
 
     public List<Client> findAll() {
-        return userRepository.findAll();
+        return clientRepository.findAll();
     }
 
     public Client findById(int id) {
-        return userRepository.findById(id);
+        return clientRepository.findById(id);
     }
 
-    public Client save(Client user) {
-        userRepository.save(user);
-        return user;
+    public Client save(Client client) {
+        return clientRepository.save(client);
     }
 
-    public Client update(Client user) {
-        userRepository.update(user);
-        return user;
+    public Client update(Client client) {
+        clientRepository.update(client);
+        return client;
     }
 
     public void deleteById(int id) {
-        userRepository.deleteById(id);
+        clientRepository.deleteById(id);
     }
 }

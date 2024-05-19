@@ -3,15 +3,15 @@ package mingati.luis.projectdb.model;
 public class Phone {
   private int id;
   private String phone;
-  private int fk_Client_id;
+  private int fkClientId;
 
   public Phone() {
   }
 
-  public Phone(int id, String phone, int fk_Client_id) {
+  public Phone(int id, String phone, int fkClientId) {
     this.id = id;
     this.phone = phone;
-    this.fk_Client_id = fk_Client_id;
+    this.fkClientId = fkClientId;
   }
 
   public int getId() {
@@ -30,12 +30,11 @@ public class Phone {
     this.phone = phone;
   }
 
-  public int getFk_Client_id() {
-    return fk_Client_id;
+  public int getFkClientId() {
+    return fkClientId;
   }
 
-  public void setFk_Client_id(int fk_Client_id) {
-    this.fk_Client_id = fk_Client_id;
+  public void setFkClientId(int fkClientId) {
+    this.fkClientId = fkClientId;
   }
-
 }

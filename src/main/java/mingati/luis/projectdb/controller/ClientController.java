@@ -3,6 +3,8 @@ package mingati.luis.projectdb.controller;
 import mingati.luis.projectdb.model.Client;
 import mingati.luis.projectdb.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,31 +13,32 @@ import java.util.List;
 @RequestMapping("/clients")
 public class ClientController {
     @Autowired
-    private ClientService userService;
+    private ClientService clientService;
 
     @GetMapping
-    public List<Client> getAllUsers() {
-        return userService.findAll();
+    public List<Client> getAllClients() {
+        return clientService.findAll();
     }
 
     @GetMapping("/{id}")
-    public Client getUserById(@PathVariable("id") int id) {
-        return userService.findById(id);
+    public Client getClientById(@PathVariable("id") int id) {
+        return clientService.findById(id);
     }
 
     @PostMapping
-    public Client createUser(@RequestBody Client user) {
-        return userService.save(user);
+    public ResponseEntity<Client> createClient(@RequestBody Client client) {
+        Client savedClient = clientService.save(client);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedClient);
     }
 
     @PutMapping("/{id}")
-    public Client updateUser(@PathVariable("id") int id, @RequestBody Client user) {
-        user.setId(id);
-        return userService.update(user);
+    public Client updateClient(@PathVariable("id") int id, @RequestBody Client client) {
+        client.setId(id);
+        return clientService.update(client);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable("id") int id) {
-        userService.deleteById(id);
+    public void deleteClient(@PathVariable("id") int id) {
+        clientService.deleteById(id);
     }
 }
