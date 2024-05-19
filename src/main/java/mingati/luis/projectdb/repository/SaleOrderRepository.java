@@ -48,17 +48,16 @@ public class SaleOrderRepository {
 
   public int save(SaleOrder saleOrder) {
     KeyHolder keyHolder = new GeneratedKeyHolder();
-    String sql = "INSERT INTO Sale_Order (date, total_price, status, order_type, payment_method, fk_client_id, fk_nfe_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    String sql = "INSERT INTO Sale_Order (date, total_price, order_type, payment_method, fk_client_id, fk_nfe_id) VALUES (?, ?, ?, ?, ?, ?)";
 
     jdbcTemplate.update(connection -> {
-      PreparedStatement ps = connection.prepareStatement(sql, new String[] { "ID" }); // Assumindo que "ID" é a coluna de chave primária na tabela Sale_Order
+      PreparedStatement ps = connection.prepareStatement(sql, new String[] { "ID" });
       ps.setDate(1, new java.sql.Date(saleOrder.getDate().getTime()));
       ps.setDouble(2, saleOrder.getTotal_price());
-      ps.setString(3, saleOrder.getStatus().toString());
-      ps.setString(4, saleOrder.getOrder_type().toString());
-      ps.setString(5, saleOrder.getPayment_method().toString());
-      ps.setInt(6, saleOrder.getFk_client_id());
-      ps.setInt(7, saleOrder.getFk_nfe_id());
+      ps.setString(3, saleOrder.getOrder_type().toString());
+      ps.setString(4, saleOrder.getPayment_method().toString());
+      ps.setInt(5, saleOrder.getFk_client_id());
+      ps.setInt(6, saleOrder.getFk_nfe_id());
       return ps;
     }, keyHolder);
 
@@ -68,8 +67,8 @@ public class SaleOrderRepository {
 
   public int update(SaleOrder saleOrder) {
     return jdbcTemplate.update(
-        "UPDATE Sale_Order SET date = ?, total_price = ?, status = ?, order_type = ?, payment_method = ?, fk_client_id = ? WHERE id = ?",
-        new Object[] { saleOrder.getDate(), saleOrder.getTotal_price(), saleOrder.getStatus().toString(),
+        "UPDATE Sale_Order SET date = ?, total_price = ?, order_type = ?, payment_method = ?, fk_client_id = ? WHERE id = ?",
+        new Object[] { saleOrder.getDate(), saleOrder.getTotal_price(),
             saleOrder.getOrder_type().toString(), saleOrder.getPayment_method().toString(), saleOrder.getFk_client_id(),
             saleOrder.getId() });
   }
@@ -83,7 +82,6 @@ public class SaleOrderRepository {
     saleOrder.setId(rs.getInt("id"));
     saleOrder.setDate(rs.getDate("date"));
     saleOrder.setTotal_price(rs.getDouble("total_price"));
-    saleOrder.setStatus(SaleOrder.Status.valueOf(rs.getString("status")));
     saleOrder.setOrder_type(SaleOrder.OrderType.valueOf(rs.getString("order_type")));
     saleOrder.setPayment_method(SaleOrder.PaymentMethod.valueOf(rs.getString("payment_method")));
     saleOrder.setFk_client_id(rs.getInt("fk_client_id"));

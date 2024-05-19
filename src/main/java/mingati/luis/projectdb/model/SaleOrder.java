@@ -7,17 +7,11 @@ public class SaleOrder {
   private int id;
   private Date date;
   private double total_price;
-  private Status status;
   private OrderType order_type;
   private PaymentMethod payment_method;
   private int fk_client_id;
   private int fk_nfe_id;
   private List<ProductDetailSale> productDetails;
-
-  public enum Status {
-    COMPLETED,
-    PENDING,
-  }
 
   public enum OrderType {
     BALCONY,
@@ -34,12 +28,11 @@ public class SaleOrder {
   public SaleOrder() {
   }
 
-  public SaleOrder(int id, Date date, double total_price, Status status, OrderType order_type,
+  public SaleOrder(int id, Date date, double total_price, OrderType order_type,
                    PaymentMethod payment_method, int fk_client_id, int fk_nfe_id, List<ProductDetailSale> productDetails) {
     this.id = id;
     this.date = date;
     this.total_price = total_price;
-    this.status = status;
     this.order_type = order_type;
     this.payment_method = payment_method;
     this.fk_client_id = fk_client_id;
@@ -69,14 +62,6 @@ public class SaleOrder {
 
   public void setTotal_price(double total_price) {
     this.total_price = total_price;
-  }
-
-  public Status getStatus() {
-    return status;
-  }
-
-  public void setStatus(Status status) {
-    this.status = status;
   }
 
   public OrderType getOrder_type() {
