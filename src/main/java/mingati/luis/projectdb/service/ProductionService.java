@@ -28,7 +28,7 @@ public class ProductionService {
 
   public Production update(Production production) {
     productionRepository.update(production);
-    return production;
+    return productionRepository.findById(production.getId());
   }
 
   public void deleteById(int id) {

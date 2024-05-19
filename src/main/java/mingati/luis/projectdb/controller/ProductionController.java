@@ -3,10 +3,12 @@ package mingati.luis.projectdb.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import mingati.luis.projectdb.model.Production;
 import mingati.luis.projectdb.service.ProductionService;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/productions")
@@ -26,8 +28,6 @@ public class ProductionController {
 
   @PostMapping
   public Production createProduction(@RequestBody Production production) {
-    System.out.println(production.getName() + production.getStart_date() + production.getEnd_date() + production.getStatus());
-
     return productionService.save(production);
   }
 
@@ -37,9 +37,18 @@ public class ProductionController {
     return productionService.update(production);
   }
 
+  @PutMapping("/{id}/status")
+  public Production updateProductionStatus(@PathVariable("id") int id, @RequestBody String status) {
+    Production production = productionService.findById(id);
+    if (production != null) {
+      production.setStatus(Production.ProductionStatus.valueOf(status));
+      return productionService.update(production);
+    }
+    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Production not found");
+  }
+
   @DeleteMapping("/{id}")
   public void deleteProduction(@PathVariable("id") int id) {
     productionService.deleteById(id);
   }
-
 }

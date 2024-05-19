@@ -3,24 +3,20 @@ package mingati.luis.projectdb.model;
 import java.util.Date;
 import java.util.List;
 
-
-
 public class Production {
-  public enum ProductionStatus {
-    IN_PROGRESS,
-    COMPLETED
-  }
   private int id;
-
   private String name;
   private Date start_date;
   private Date end_date;
   private ProductionStatus status;
-
   private List<Product> products;
 
-  public Production() {
+  public enum ProductionStatus {
+    IN_PROGRESS,
+    COMPLETED
   }
+
+  public Production() {}
 
   public Production(String name, int id, Date start_date, Date end_date, ProductionStatus status) {
     this.id = id;
@@ -38,9 +34,13 @@ public class Production {
     this.id = id;
   }
 
-  public String getName() { return name; }
+  public String getName() {
+    return name;
+  }
 
-  public void setName(String name) { this.name = name; }
+  public void setName(String name) {
+    this.name = name;
+  }
 
   public Date getStart_date() {
     return start_date;
@@ -66,7 +66,11 @@ public class Production {
     this.status = status;
   }
 
-  public List<Product> getProducts() { return products; }
+  public List<Product> getProducts() {
+    return products;
+  }
 
-  public void setProducts(List<Product> products) { this.products = products; }
+  public void setProducts(List<Product> products) {
+    this.products = products;
+  }
 }
