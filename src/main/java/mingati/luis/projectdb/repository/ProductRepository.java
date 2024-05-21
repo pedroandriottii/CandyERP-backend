@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
 
+import mingati.luis.projectdb.model.BestSellProducts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -51,6 +52,22 @@ public class ProductRepository {
     }
     return product;
   }
+
+  public List<BestSellProducts> getBestSellingProducts() {
+    String sql = "SELECT p.id, p.name, SUM(pds.quantity) AS total_quantity_sold " +
+            "FROM Product p " +
+            "JOIN Product_Detail_Sale pds ON p.id = pds.fk_Product_id " +
+            "GROUP BY p.id, p.name " +
+            "ORDER BY total_quantity_sold DESC";
+
+    return jdbcTemplate.query(sql, (rs, rowNum) -> {
+      int id = rs.getInt("id");
+      String name = rs.getString("name");
+      int totalQuantitySold = rs.getInt("total_quantity_sold");
+      return new BestSellProducts(id, name, totalQuantitySold);
+    });
+  }
+
 
   public int save(Product product) {
     KeyHolder keyHolder = new GeneratedKeyHolder();
