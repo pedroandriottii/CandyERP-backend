@@ -2,6 +2,7 @@ package mingati.luis.projectdb.service;
 
 import java.util.List;
 
+import mingati.luis.projectdb.model.MonthlySales;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,10 +26,13 @@ public class SaleOrderService {
     saleOrderRepository.save(saleOrder);
     return saleOrder;
   }
-
   public SaleOrder update(SaleOrder saleOrder) {
     saleOrderRepository.update(saleOrder);
     return saleOrder;
+  }
+
+  public List<MonthlySales> getMonthlyRevenues() {
+    return saleOrderRepository.getMonthlySales();
   }
 
   public void deleteById(int id) {

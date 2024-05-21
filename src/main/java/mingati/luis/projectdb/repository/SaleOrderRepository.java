@@ -1,9 +1,13 @@
 package mingati.luis.projectdb.repository;
 
+import java.math.BigDecimal;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import mingati.luis.projectdb.model.MonthlySales;
 import mingati.luis.projectdb.model.ProductDetailSale;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -76,6 +80,21 @@ public class SaleOrderRepository {
   public int deleteById(int id) {
     return jdbcTemplate.update("DELETE FROM Sale_Order WHERE id = ?", new Object[] { id });
   }
+
+  public List<MonthlySales> getMonthlySales() {
+    String sql = "SELECT YEAR(date) AS year, MONTH(date) AS month, SUM(total_price) AS total_revenue " +
+            "FROM Sale_Order " +
+            "GROUP BY YEAR(date), MONTH(date) " +
+            "ORDER BY YEAR(date), MONTH(date)";
+
+    return jdbcTemplate.query(sql, (rs, rowNum) -> {
+      int year = rs.getInt("year");
+      int month = rs.getInt("month");
+      BigDecimal totalRevenue = rs.getBigDecimal("total_revenue");
+      return new MonthlySales(year, month, totalRevenue);
+    });
+  }
+
 
   public final RowMapper<SaleOrder> saleOrderMapper = (rs, rowNum) -> {
     SaleOrder saleOrder = new SaleOrder();
