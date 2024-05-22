@@ -1,10 +1,8 @@
 package mingati.luis.projectdb.repository;
 
-import java.sql.PreparedStatement;
-import java.sql.Statement;
-import java.util.List;
-
 import mingati.luis.projectdb.model.BestSellProducts;
+import mingati.luis.projectdb.model.Ingredient;
+import mingati.luis.projectdb.model.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -12,8 +10,11 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import mingati.luis.projectdb.model.Product;
-import mingati.luis.projectdb.model.Ingredient;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.List;
 
 @Repository
 public class ProductRepository {
@@ -22,15 +23,15 @@ public class ProductRepository {
   private JdbcTemplate jdbcTemplate;
 
   public List<Product> findAll() {
-    List<Product> products = jdbcTemplate.query("SELECT * FROM Product", ProductMapper);
+    List<Product> products = jdbcTemplate.query("SELECT * FROM Product", new ProductRowMapper());
     for (Product product : products) {
       List<Ingredient> ingredients = jdbcTemplate.query(
-              "SELECT i.*, ip.quantity AS quantity " +
+              "SELECT i.*, ip.quantity AS used_quantity " +
                       "FROM Ingredient i " +
                       "INNER JOIN Ingredient_Product ip ON i.id = ip.fk_Ingredient_Id " +
                       "WHERE ip.fk_Product_Id = ?",
               new Object[]{product.getId()},
-              IngredientWithQuantityMapper
+              new IngredientWithQuantityRowMapper()
       );
       product.setIngredients(ingredients);
     }
@@ -38,15 +39,15 @@ public class ProductRepository {
   }
 
   public Product findById(int id) {
-    Product product = jdbcTemplate.queryForObject("SELECT * FROM Product WHERE id = ?", ProductMapper, id);
+    Product product = jdbcTemplate.queryForObject("SELECT * FROM Product WHERE id = ?", new ProductRowMapper(), id);
     if (product != null) {
       List<Ingredient> ingredients = jdbcTemplate.query(
-              "SELECT i.*, ip.quantity AS quantity " +
+              "SELECT i.*, ip.quantity AS used_quantity " +
                       "FROM Ingredient i " +
                       "INNER JOIN Ingredient_Product ip ON i.id = ip.fk_Ingredient_Id " +
                       "WHERE ip.fk_Product_Id = ?",
               new Object[]{id},
-              IngredientWithQuantityMapper
+              new IngredientWithQuantityRowMapper()
       );
       product.setIngredients(ingredients);
     }
@@ -67,7 +68,6 @@ public class ProductRepository {
       return new BestSellProducts(id, name, totalQuantitySold);
     });
   }
-
 
   public int save(Product product) {
     KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -105,23 +105,29 @@ public class ProductRepository {
     jdbcTemplate.update("DELETE FROM Product WHERE id = ?", id);
   }
 
-  private final RowMapper<Product> ProductMapper = (rs, rowNum) -> {
-    Product product = new Product();
-    product.setId(rs.getInt("id"));
-    product.setName(rs.getString("name"));
-    product.setPrice(rs.getDouble("price"));
-    product.setQuantity(rs.getInt("quantity"));
-    product.setFkProductId((Integer) rs.getObject("fk_product_id"));
-    return product;
-  };
+  private static final class ProductRowMapper implements RowMapper<Product> {
+    @Override
+    public Product mapRow(ResultSet rs, int rowNum) throws SQLException, SQLException {
+      Product product = new Product();
+      product.setId(rs.getInt("id"));
+      product.setName(rs.getString("name"));
+      product.setPrice(rs.getDouble("price"));
+      product.setQuantity(rs.getInt("quantity"));
+      product.setFkProductId((Integer) rs.getObject("fk_product_id"));
+      return product;
+    }
+  }
 
-  private final RowMapper<Ingredient> IngredientWithQuantityMapper = (rs, rowNum) -> {
-    Ingredient ingredient = new Ingredient();
-    ingredient.setId(rs.getInt("id"));
-    ingredient.setName(rs.getString("name"));
-    ingredient.setQuantity(rs.getInt("quantity"));
-    ingredient.setMeasurementUnit(Ingredient.MeasurementUnit.valueOf(rs.getString("measurement_unit")));
-    ingredient.setCost(rs.getDouble("cost"));
-    return ingredient;
-  };
+  private static final class IngredientWithQuantityRowMapper implements RowMapper<Ingredient> {
+    @Override
+    public Ingredient mapRow(ResultSet rs, int rowNum) throws SQLException {
+      Ingredient ingredient = new Ingredient();
+      ingredient.setId(rs.getInt("id"));
+      ingredient.setName(rs.getString("name"));
+      ingredient.setQuantity(rs.getInt("used_quantity")); // Quantidade usada no produto
+      ingredient.setMeasurementUnit(Ingredient.MeasurementUnit.valueOf(rs.getString("measurement_unit")));
+      ingredient.setCost(rs.getDouble("cost"));
+      return ingredient;
+    }
+  }
 }
