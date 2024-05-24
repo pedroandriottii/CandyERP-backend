@@ -1,9 +1,12 @@
 package mingati.luis.projectdb.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Detail {
   private int id;
   private String description;
-  private double additional_value;
+  @JsonProperty("additional_value")
+  private double additionalValue;
 
   public Detail() {
   }
@@ -11,7 +14,7 @@ public class Detail {
   public Detail(int id, String description, double additional_value) {
     this.id = id;
     this.description = description;
-    this.additional_value = additional_value;
+    this.additionalValue = additional_value;
   }
 
   public int getId() {
@@ -31,10 +34,10 @@ public class Detail {
   }
 
   public double getAdditionalValue() {
-    return additional_value;
+    return additionalValue;
   }
 
   public void setAdditionalValue(double additional_value) {
-    this.additional_value = additional_value;
+    this.additionalValue = additional_value;
   }
 }

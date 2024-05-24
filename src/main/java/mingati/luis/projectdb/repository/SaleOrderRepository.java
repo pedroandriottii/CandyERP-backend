@@ -92,67 +92,64 @@ public class SaleOrderRepository {
     });
   }
 
-  public Map<String, List<ProductsByPaymentMethod>> getProductsByPaymentMethods() {
+  public Map<String, Double> getProductsByPaymentMethods() {
     YearMonth currentMonth = YearMonth.now();
     LocalDate startOfMonth = currentMonth.atDay(1);
     LocalDate endOfMonth = currentMonth.atEndOfMonth();
 
     String[] paymentMethods = {"CASH", "CREDIT_CARD", "DEBIT_CARD", "PIX"};
-    Map<String, List<ProductsByPaymentMethod>> result = new HashMap<>();
+    Map<String, Double> result = new HashMap<>();
 
     for (String paymentMethod : paymentMethods) {
-      String sql = "SELECT p.id, p.name, SUM(pds.quantity) AS total_quantity_sold " +
+      String sql = "SELECT SUM(pds.quantity * p.price) AS total_value_sold " +
               "FROM Product p " +
               "JOIN Product_Detail_Sale pds ON p.id = pds.fk_Product_id " +
               "JOIN Sale_Order so ON pds.fk_Sale_Order_id = so.id " +
-              "WHERE so.payment_method = ? AND so.date BETWEEN ? AND ? " +
-              "GROUP BY p.id, p.name " +
-              "ORDER BY total_quantity_sold DESC";
+              "WHERE so.payment_method = ? AND so.date BETWEEN ? AND ?";
 
-      List<ProductsByPaymentMethod> products = jdbcTemplate.query(sql, new Object[]{paymentMethod, startOfMonth, endOfMonth}, (rs, rowNum) -> {
-        int id = rs.getInt("id");
-        String name = rs.getString("name");
-        int totalQuantitySold = rs.getInt("total_quantity_sold");
-        return new ProductsByPaymentMethod(id, name, totalQuantitySold);
-      });
+      Double totalValueSold = jdbcTemplate.queryForObject(sql, new Object[]{paymentMethod, startOfMonth, endOfMonth}, Double.class);
 
-      result.put(paymentMethod, products);
+      // If no sales found for the payment method, set totalValueSold to 0
+      if (totalValueSold == null) {
+        totalValueSold = 0.0;
+      }
+
+      result.put(paymentMethod, totalValueSold);
     }
 
     return result;
   }
 
-  public Map<String, List<ProductsByNeighborhood>> getProductsByNeighborhood() {
+  public Map<String, NeighborhoodSales> getProductsByNeighborhood() {
     YearMonth currentMonth = YearMonth.now();
     LocalDate startOfMonth = currentMonth.atDay(1);
     LocalDate endOfMonth = currentMonth.atEndOfMonth();
 
-    String sql = "SELECT p.id, p.name, c.neighborhood, SUM(pds.quantity) AS total_quantity_sold " +
+    String sql = "SELECT c.neighborhood, COUNT(so.id) AS total_sales, SUM(pds.quantity * p.price) AS total_value_sold " +
             "FROM Product p " +
             "JOIN Product_Detail_Sale pds ON p.id = pds.fk_Product_id " +
             "JOIN Sale_Order so ON pds.fk_Sale_Order_id = so.id " +
             "JOIN Client c ON so.fk_Client_id = c.id " +
             "WHERE so.date BETWEEN ? AND ? " +
-            "GROUP BY p.id, p.name, c.neighborhood " +
-            "ORDER BY total_quantity_sold DESC";
+            "GROUP BY c.neighborhood " +
+            "ORDER BY total_sales DESC";
 
     List<Map<String, Object>> queryResults = jdbcTemplate.queryForList(sql, startOfMonth, endOfMonth);
 
-    Map<String, List<ProductsByNeighborhood>> result = new HashMap<>();
+    Map<String, NeighborhoodSales> result = new HashMap<>();
 
     for (Map<String, Object> row : queryResults) {
-      int id = (int) row.get("id");
-      String name = (String) row.get("name");
       String neighborhood = (String) row.get("neighborhood");
-      int totalQuantitySold = ((Number) row.get("total_quantity_sold")).intValue();
+      int totalSales = ((Number) row.get("total_sales")).intValue();
+      double totalValueSold = ((Number) row.get("total_value_sold")).doubleValue();
 
-      ProductsByNeighborhood product = new ProductsByNeighborhood(id, name, totalQuantitySold);
-
-      result.computeIfAbsent(neighborhood, k -> new ArrayList<>()).add(product);
+      NeighborhoodSales sales = new NeighborhoodSales(totalSales, totalValueSold);
+      result.put(neighborhood, sales);
     }
 
     return result;
   }
+
 
   public final RowMapper<SaleOrder> saleOrderMapper = (rs, rowNum) -> {
     SaleOrder saleOrder = new SaleOrder();

@@ -54,12 +54,12 @@ public class DashboardController {
     }
 
     @GetMapping("/products-by-payment-method")
-    public Map<String, List<ProductsByPaymentMethod>> getProductsByPaymentMethod() {
+    public Map<String, Double> getProductsByPaymentMethod() {
         return saleOrderService.getProductsByPaymentMethods();
     }
 
     @GetMapping("/products-by-neighborhood")
-    public Map<String, List<ProductsByNeighborhood>> getProductsByNeighborhood() {
+    public Map<String, NeighborhoodSales> getProductsByNeighborhood() {
         return saleOrderService.getProductsByNeighborhood();
     }
 

@@ -26,6 +26,7 @@ public class DetailController {
 
   @PostMapping
   public Detail createDetail(@RequestBody Detail detail) {
+    System.out.println(detail.getAdditionalValue() + " " + detail.getDescription());
     return detailService.save(detail);
   }
 
