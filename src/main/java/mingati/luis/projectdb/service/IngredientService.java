@@ -2,6 +2,7 @@ package mingati.luis.projectdb.service;
 
 import java.util.List;
 
+import mingati.luis.projectdb.model.IngredientUsage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,10 @@ public class IngredientService {
 
   public List<Ingredient> findAllByOrder(String orderBy) {
     return ingredientRepository.getIngredientsByStock(orderBy);
+  }
+
+  public List<IngredientUsage> getMostUsedIngredients() {
+    return ingredientRepository.getMostUsedIngredients();
   }
 
 

@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
 
+import mingati.luis.projectdb.model.IngredientUsage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -44,6 +45,23 @@ public class IngredientRepository {
       return ingredient;
     });
   }
+
+  public List<IngredientUsage> getMostUsedIngredients() {
+    String sql = "SELECT i.id, i.name, i.measurement_unit, COUNT(ip.fk_Ingredient_id) AS usage_count " +
+            "FROM Ingredient_Product ip " +
+            "JOIN Ingredient i ON ip.fk_Ingredient_id = i.id " +
+            "GROUP BY i.id, i.name, i.measurement_unit " +
+            "ORDER BY usage_count DESC";
+    return jdbcTemplate.query(sql, (rs, rowNum) -> {
+      IngredientUsage ingredientUsage = new IngredientUsage();
+      ingredientUsage.setId(rs.getInt("id"));
+      ingredientUsage.setName(rs.getString("name"));
+      ingredientUsage.setMeasurementUnit(rs.getString("measurement_unit"));
+      ingredientUsage.setTotalUsed(rs.getInt("usage_count"));
+      return ingredientUsage;
+    });
+  }
+
 
   public Ingredient findById(int id) {
     Ingredient ingredient = jdbcTemplate.queryForObject("SELECT * FROM Ingredient WHERE id = ?", IngredientMapper, new Object[] { id });

@@ -75,4 +75,9 @@ public class DashboardController {
     public List<Ingredient> getIngredientsByStock(@RequestParam(defaultValue = "asc") String orderBy) {
         return ingredientService.findAllByOrder(orderBy);
     }
+
+    @GetMapping("/most-used-ingredients")
+    public List<IngredientUsage> getMostUsedIngredients() {
+        return ingredientService.getMostUsedIngredients();
+    }
 }
