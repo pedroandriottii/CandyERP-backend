@@ -17,6 +17,11 @@ public class IngredientService {
     return ingredientRepository.findAll();
   }
 
+  public List<Ingredient> findAllByOrder(String orderBy) {
+    return ingredientRepository.getIngredientsByStock(orderBy);
+  }
+
+
   public Ingredient findById(int id) {
     return ingredientRepository.findById(id);
   }

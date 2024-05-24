@@ -19,6 +19,7 @@ public class IngredientController {
     return ingredientService.findAll();
   }
 
+
   @GetMapping("/{id}")
   public Ingredient getIngredientById(@PathVariable("id") int id) {
     return ingredientService.findById(id);

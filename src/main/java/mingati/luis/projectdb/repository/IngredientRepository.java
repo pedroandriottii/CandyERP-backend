@@ -32,6 +32,19 @@ public class IngredientRepository {
     return ingredients;
   }
 
+  public List<Ingredient> getIngredientsByStock(String orderBy) {
+    String sql = "SELECT * FROM Ingredient ORDER BY quantity " + ("desc".equalsIgnoreCase(orderBy) ? "DESC" : "ASC");
+    return jdbcTemplate.query(sql, (rs, rowNum) -> {
+      Ingredient ingredient = new Ingredient();
+      ingredient.setId(rs.getInt("id"));
+      ingredient.setName(rs.getString("name"));
+      ingredient.setQuantity(rs.getInt("quantity"));
+      ingredient.setCost(rs.getDouble("cost"));
+      ingredient.setMeasurementUnit(Ingredient.MeasurementUnit.valueOf(rs.getString("measurement_unit")));
+      return ingredient;
+    });
+  }
+
   public Ingredient findById(int id) {
     Ingredient ingredient = jdbcTemplate.queryForObject("SELECT * FROM Ingredient WHERE id = ?", IngredientMapper, new Object[] { id });
     if (ingredient != null) {

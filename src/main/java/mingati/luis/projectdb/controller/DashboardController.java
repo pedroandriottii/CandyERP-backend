@@ -1,6 +1,7 @@
 package mingati.luis.projectdb.controller;
 
 import mingati.luis.projectdb.model.*;
+import mingati.luis.projectdb.service.IngredientService;
 import mingati.luis.projectdb.service.ProductService;
 import mingati.luis.projectdb.service.ProductionService;
 import mingati.luis.projectdb.service.SaleOrderService;
@@ -22,6 +23,8 @@ public class DashboardController {
     private ProductService productService;
     @Autowired
     private ProductionService productionService;
+    @Autowired
+    private IngredientService ingredientService;
 
     @GetMapping("/monthly-sales")
     public List<MonthlySales> getMonthlyRevenues() {
@@ -66,5 +69,10 @@ public class DashboardController {
     @GetMapping("/products-by-stock")
     public List<Product> getProductsByStock(@RequestParam(defaultValue = "asc") String orderBy) {
         return productService.getProductsByStock(orderBy);
+    }
+
+    @GetMapping("/ingredients-by-stock")
+    public List<Ingredient> getIngredientsByStock(@RequestParam(defaultValue = "asc") String orderBy) {
+        return ingredientService.findAllByOrder(orderBy);
     }
 }
