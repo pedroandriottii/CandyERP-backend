@@ -108,6 +108,19 @@ public class ProductRepository {
     });
   }
 
+  public List<Product> getProductsByStock(String orderBy) {
+    String sql = "SELECT * FROM Product ORDER BY quantity " + orderBy;
+
+    return jdbcTemplate.query(sql, (rs, rowNum) -> {
+      int id = rs.getInt("id");
+      String name = rs.getString("name");
+      int quantity = rs.getInt("quantity");
+      double price = rs.getDouble("price");
+      int fk_product_id = rs.getInt("fk_product_id");
+      return new Product(id, name,price, quantity, fk_product_id);
+    });
+  }
+
   public int save(Product product) {
     KeyHolder keyHolder = new GeneratedKeyHolder();
     jdbcTemplate.update(connection -> {

@@ -3,20 +3,17 @@ package mingati.luis.projectdb.repository;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.util.*;
 
-import mingati.luis.projectdb.model.MonthlySales;
-import mingati.luis.projectdb.model.ProductDetailSale;
+import mingati.luis.projectdb.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-
-import mingati.luis.projectdb.model.SaleOrder;
 
 @Repository
 public class SaleOrderRepository {
@@ -95,6 +92,67 @@ public class SaleOrderRepository {
     });
   }
 
+  public Map<String, List<ProductsByPaymentMethod>> getProductsByPaymentMethods() {
+    YearMonth currentMonth = YearMonth.now();
+    LocalDate startOfMonth = currentMonth.atDay(1);
+    LocalDate endOfMonth = currentMonth.atEndOfMonth();
+
+    String[] paymentMethods = {"CASH", "CREDIT_CARD", "DEBIT_CARD", "PIX"};
+    Map<String, List<ProductsByPaymentMethod>> result = new HashMap<>();
+
+    for (String paymentMethod : paymentMethods) {
+      String sql = "SELECT p.id, p.name, SUM(pds.quantity) AS total_quantity_sold " +
+              "FROM Product p " +
+              "JOIN Product_Detail_Sale pds ON p.id = pds.fk_Product_id " +
+              "JOIN Sale_Order so ON pds.fk_Sale_Order_id = so.id " +
+              "WHERE so.payment_method = ? AND so.date BETWEEN ? AND ? " +
+              "GROUP BY p.id, p.name " +
+              "ORDER BY total_quantity_sold DESC";
+
+      List<ProductsByPaymentMethod> products = jdbcTemplate.query(sql, new Object[]{paymentMethod, startOfMonth, endOfMonth}, (rs, rowNum) -> {
+        int id = rs.getInt("id");
+        String name = rs.getString("name");
+        int totalQuantitySold = rs.getInt("total_quantity_sold");
+        return new ProductsByPaymentMethod(id, name, totalQuantitySold);
+      });
+
+      result.put(paymentMethod, products);
+    }
+
+    return result;
+  }
+
+  public Map<String, List<ProductsByNeighborhood>> getProductsByNeighborhood() {
+    YearMonth currentMonth = YearMonth.now();
+    LocalDate startOfMonth = currentMonth.atDay(1);
+    LocalDate endOfMonth = currentMonth.atEndOfMonth();
+
+    String sql = "SELECT p.id, p.name, c.neighborhood, SUM(pds.quantity) AS total_quantity_sold " +
+            "FROM Product p " +
+            "JOIN Product_Detail_Sale pds ON p.id = pds.fk_Product_id " +
+            "JOIN Sale_Order so ON pds.fk_Sale_Order_id = so.id " +
+            "JOIN Client c ON so.fk_Client_id = c.id " +
+            "WHERE so.date BETWEEN ? AND ? " +
+            "GROUP BY p.id, p.name, c.neighborhood " +
+            "ORDER BY total_quantity_sold DESC";
+
+    List<Map<String, Object>> queryResults = jdbcTemplate.queryForList(sql, startOfMonth, endOfMonth);
+
+    Map<String, List<ProductsByNeighborhood>> result = new HashMap<>();
+
+    for (Map<String, Object> row : queryResults) {
+      int id = (int) row.get("id");
+      String name = (String) row.get("name");
+      String neighborhood = (String) row.get("neighborhood");
+      int totalQuantitySold = ((Number) row.get("total_quantity_sold")).intValue();
+
+      ProductsByNeighborhood product = new ProductsByNeighborhood(id, name, totalQuantitySold);
+
+      result.computeIfAbsent(neighborhood, k -> new ArrayList<>()).add(product);
+    }
+
+    return result;
+  }
 
   public final RowMapper<SaleOrder> saleOrderMapper = (rs, rowNum) -> {
     SaleOrder saleOrder = new SaleOrder();

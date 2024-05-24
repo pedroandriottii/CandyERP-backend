@@ -1,8 +1,11 @@
 package mingati.luis.projectdb.service;
 
 import java.util.List;
+import java.util.Map;
 
 import mingati.luis.projectdb.model.MonthlySales;
+import mingati.luis.projectdb.model.ProductsByNeighborhood;
+import mingati.luis.projectdb.model.ProductsByPaymentMethod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +36,14 @@ public class SaleOrderService {
 
   public List<MonthlySales> getMonthlyRevenues() {
     return saleOrderRepository.getMonthlySales();
+  }
+
+  public Map<String, List<ProductsByPaymentMethod>> getProductsByPaymentMethods() {
+    return saleOrderRepository.getProductsByPaymentMethods();
+  }
+
+  public Map<String, List<ProductsByNeighborhood>> getProductsByNeighborhood() {
+    return saleOrderRepository.getProductsByNeighborhood();
   }
 
   public void deleteById(int id) {

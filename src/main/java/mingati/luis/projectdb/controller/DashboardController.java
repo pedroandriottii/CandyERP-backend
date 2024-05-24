@@ -1,18 +1,17 @@
 package mingati.luis.projectdb.controller;
 
-import mingati.luis.projectdb.model.BestSellProducts;
-import mingati.luis.projectdb.model.LoyalCustomers;
-import mingati.luis.projectdb.model.MonthlySales;
-import mingati.luis.projectdb.model.MostProducedProducts;
+import mingati.luis.projectdb.model.*;
 import mingati.luis.projectdb.service.ProductService;
 import mingati.luis.projectdb.service.ProductionService;
 import mingati.luis.projectdb.service.SaleOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/dashboard")
@@ -52,5 +51,20 @@ public class DashboardController {
     @GetMapping("/loyal-customers")
     public List<LoyalCustomers> getLoyalCustomers() {
         return productService.getLoyalCustomers();
+    }
+
+    @GetMapping("/products-by-payment-method")
+    public Map<String, List<ProductsByPaymentMethod>> getProductsByPaymentMethod() {
+        return saleOrderService.getProductsByPaymentMethods();
+    }
+
+    @GetMapping("/products-by-neighborhood")
+    public Map<String, List<ProductsByNeighborhood>> getProductsByNeighborhood() {
+        return saleOrderService.getProductsByNeighborhood();
+    }
+
+    @GetMapping("/products-by-stock")
+    public List<Product> getProductsByStock(@RequestParam(defaultValue = "asc") String orderBy) {
+        return productService.getProductsByStock(orderBy);
     }
 }

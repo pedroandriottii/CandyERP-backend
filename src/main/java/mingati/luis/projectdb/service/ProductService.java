@@ -48,4 +48,8 @@ public class ProductService {
   public List<LoyalCustomers> getLoyalCustomers() {
     return productRepository.getLoyalCustomers();
   }
+
+  public List<Product> getProductsByStock(String orderBy) {
+    return productRepository.getProductsByStock(orderBy);
+  }
 }
