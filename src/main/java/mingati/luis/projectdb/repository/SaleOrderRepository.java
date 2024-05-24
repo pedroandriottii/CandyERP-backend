@@ -79,10 +79,13 @@ public class SaleOrderRepository {
   }
 
   public List<MonthlySales> getMonthlySales() {
-    String sql = "SELECT YEAR(date) AS year, MONTH(date) AS month, SUM(total_price) AS total_revenue " +
-            "FROM Sale_Order " +
-            "GROUP BY YEAR(date), MONTH(date) " +
-            "ORDER BY YEAR(date), MONTH(date)";
+    String sql = "SELECT sub.year, sub.month, sub.total_revenue " +
+            "FROM ( " +
+            "    SELECT YEAR(date) AS year, MONTH(date) AS month, SUM(total_price) AS total_revenue " +
+            "    FROM Sale_Order " +
+            "    GROUP BY YEAR(date), MONTH(date) " +
+            ") sub " +
+            "ORDER BY sub.year, sub.month";
 
     return jdbcTemplate.query(sql, (rs, rowNum) -> {
       int year = rs.getInt("year");
@@ -91,6 +94,7 @@ public class SaleOrderRepository {
       return new MonthlySales(year, month, totalRevenue);
     });
   }
+
 
   public Map<String, Double> getProductsByPaymentMethods() {
     YearMonth currentMonth = YearMonth.now();
