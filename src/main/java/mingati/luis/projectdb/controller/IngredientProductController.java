@@ -34,6 +34,7 @@ public class IngredientProductController {
   @PutMapping("/{fk_product_id}/{fk_ingredient_id}")
   public IngredientProduct updateIngredientProduct(@PathVariable("fk_product_id") int fk_product_id,
       @PathVariable("fk_ingredient_id") int fk_ingredient_id, @RequestBody IngredientProduct ingredientProduct) {
+    System.out.println("OI TESTE");
     ingredientProduct.setFkProductId(fk_product_id);
     ingredientProduct.setFkIngredientId(fk_ingredient_id);
     return ingredientProductService.update(ingredientProduct);

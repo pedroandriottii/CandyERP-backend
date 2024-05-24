@@ -5,6 +5,7 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.Objects;
 
+import mingati.luis.projectdb.model.MostProducedProducts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -84,7 +85,6 @@ public class ProductionRepository {
             }
         );
     }
-    
 
     public int deleteById(int id) {
         return jdbcTemplate.update("DELETE FROM Production WHERE id = ?", id);
@@ -117,5 +117,20 @@ public class ProductionRepository {
                 productMapper,
                 productionId
         );
+    }
+
+    public List<MostProducedProducts> getMostProducedProducts() {
+        String sql = "SELECT p.id, p.name, SUM(pp.quantity) AS quantity " +
+                "FROM Product p " +
+                "JOIN Production_Product pp ON p.id = pp.fk_Product_id " +
+                "GROUP BY p.id, p.name " +
+                "ORDER BY quantity DESC";
+
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            int id = rs.getInt("id");
+            String name = rs.getString("name");
+            int totalQuantityProduced = rs.getInt("quantity");
+            return new MostProducedProducts(id, name, totalQuantityProduced);
+        });
     }
 }

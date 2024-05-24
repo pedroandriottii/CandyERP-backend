@@ -3,6 +3,7 @@ package mingati.luis.projectdb.service;
 import java.util.List;
 
 import mingati.luis.projectdb.model.BestSellProducts;
+import mingati.luis.projectdb.model.LoyalCustomers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,4 +41,11 @@ public class ProductService {
     return productRepository.getBestSellingProducts();
   }
 
+  public List<BestSellProducts> getBestSellingProductsByOrderType(String orderType) {
+    return productRepository.getBestSellingProductsByOrderType(orderType);
+  }
+
+  public List<LoyalCustomers> getLoyalCustomers() {
+    return productRepository.getLoyalCustomers();
+  }
 }

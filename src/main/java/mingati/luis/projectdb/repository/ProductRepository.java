@@ -2,6 +2,7 @@ package mingati.luis.projectdb.repository;
 
 import mingati.luis.projectdb.model.BestSellProducts;
 import mingati.luis.projectdb.model.Ingredient;
+import mingati.luis.projectdb.model.LoyalCustomers;
 import mingati.luis.projectdb.model.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -14,6 +15,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 
 @Repository
@@ -66,6 +69,42 @@ public class ProductRepository {
       String name = rs.getString("name");
       int totalQuantitySold = rs.getInt("total_quantity_sold");
       return new BestSellProducts(id, name, totalQuantitySold);
+    });
+  }
+
+  public List<BestSellProducts> getBestSellingProductsByOrderType(String orderType) {
+    YearMonth currentMonth = YearMonth.now();
+    LocalDate startOfMonth = currentMonth.atDay(1);
+    LocalDate endOfMonth = currentMonth.atEndOfMonth();
+
+    String sql = "SELECT p.id, p.name, SUM(pds.quantity) AS total_quantity_sold " +
+            "FROM Product p " +
+            "JOIN Product_Detail_Sale pds ON p.id = pds.fk_Product_id " +
+            "JOIN Sale_Order so ON pds.fk_Sale_Order_id = so.id " +
+            "WHERE so.order_type = ? AND so.date BETWEEN ? AND ? " +
+            "GROUP BY p.id, p.name " +
+            "ORDER BY total_quantity_sold DESC";
+
+    return jdbcTemplate.query(sql, new Object[]{orderType, startOfMonth, endOfMonth}, (rs, rowNum) -> {
+      int id = rs.getInt("id");
+      String name = rs.getString("name");
+      int totalQuantitySold = rs.getInt("total_quantity_sold");
+      return new BestSellProducts(id, name, totalQuantitySold);
+    });
+  }
+
+  public List<LoyalCustomers> getLoyalCustomers() {
+    String sql = "SELECT c.id, c.name, COUNT(so.id) AS total_orders " +
+            "FROM Client c " +
+            "JOIN Sale_Order so ON c.id = so.fk_Client_id " +
+            "GROUP BY c.id, c.name " +
+            "ORDER BY total_orders DESC";
+
+    return jdbcTemplate.query(sql, (rs, rowNum) -> {
+      int id = rs.getInt("id");
+      String name = rs.getString("name");
+      int totalOrders = rs.getInt("total_orders");
+      return new LoyalCustomers(id, name, totalOrders);
     });
   }
 

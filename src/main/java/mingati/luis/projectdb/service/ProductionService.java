@@ -2,6 +2,7 @@ package mingati.luis.projectdb.service;
 
 import java.util.List;
 
+import mingati.luis.projectdb.model.MostProducedProducts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,5 +34,9 @@ public class ProductionService {
 
   public void deleteById(int id) {
     productionRepository.deleteById(id);
+  }
+
+  public List<MostProducedProducts> getMostProducedProducts() {
+    return productionRepository.getMostProducedProducts();
   }
 }
