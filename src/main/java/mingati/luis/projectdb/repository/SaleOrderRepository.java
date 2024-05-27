@@ -57,7 +57,13 @@ public class SaleOrderRepository {
       ps.setDouble(2, saleOrder.getTotal_price());
       ps.setString(3, saleOrder.getOrder_type().toString());
       ps.setString(4, saleOrder.getPayment_method().toString());
-      ps.setInt(5, saleOrder.getFk_client_id());
+
+      if (saleOrder.getFk_client_id() == null) {
+        ps.setNull(5, java.sql.Types.INTEGER);
+      } else {
+        ps.setInt(5, saleOrder.getFk_client_id());
+      }
+
       ps.setInt(6, saleOrder.getFk_nfe_id());
       return ps;
     }, keyHolder);
@@ -66,13 +72,29 @@ public class SaleOrderRepository {
     return keyHolder.getKey().intValue();
   }
 
+
   public int update(SaleOrder saleOrder) {
-    return jdbcTemplate.update(
-        "UPDATE Sale_Order SET date = ?, total_price = ?, order_type = ?, payment_method = ?, fk_client_id = ? WHERE id = ?",
-        new Object[] { saleOrder.getDate(), saleOrder.getTotal_price(),
-            saleOrder.getOrder_type().toString(), saleOrder.getPayment_method().toString(), saleOrder.getFk_client_id(),
-            saleOrder.getId() });
+    return jdbcTemplate.update(connection -> {
+      PreparedStatement ps = connection.prepareStatement(
+              "UPDATE Sale_Order SET date = ?, total_price = ?, order_type = ?, payment_method = ?, fk_client_id = ?, fk_nfe_id = ? WHERE id = ?"
+      );
+      ps.setDate(1, new java.sql.Date(saleOrder.getDate().getTime()));
+      ps.setDouble(2, saleOrder.getTotal_price());
+      ps.setString(3, saleOrder.getOrder_type().toString());
+      ps.setString(4, saleOrder.getPayment_method().toString());
+
+      if (saleOrder.getFk_client_id() == null) {
+        ps.setNull(5, java.sql.Types.INTEGER);
+      } else {
+        ps.setInt(5, saleOrder.getFk_client_id());
+      }
+
+      ps.setInt(6, saleOrder.getFk_nfe_id());
+      ps.setInt(7, saleOrder.getId());
+      return ps;
+    });
   }
+
 
   public int deleteById(int id) {
     return jdbcTemplate.update("DELETE FROM Sale_Order WHERE id = ?", new Object[] { id });
@@ -162,10 +184,18 @@ public class SaleOrderRepository {
     saleOrder.setTotal_price(rs.getDouble("total_price"));
     saleOrder.setOrder_type(SaleOrder.OrderType.valueOf(rs.getString("order_type")));
     saleOrder.setPayment_method(SaleOrder.PaymentMethod.valueOf(rs.getString("payment_method")));
-    saleOrder.setFk_client_id(rs.getInt("fk_client_id"));
+
+    int fkClientId = rs.getInt("fk_client_id");
+    if (rs.wasNull()) {
+      saleOrder.setFk_client_id(null);
+    } else {
+      saleOrder.setFk_client_id(fkClientId);
+    }
+
     saleOrder.setFk_nfe_id(rs.getInt("fk_nfe_id"));
     return saleOrder;
   };
+
 
   private final RowMapper<ProductDetailSale> productDetailSaleMapper = (rs, rowNum) -> {
     ProductDetailSale productDetailSale = new ProductDetailSale();

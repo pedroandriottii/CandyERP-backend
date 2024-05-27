@@ -26,6 +26,7 @@ public class SaleOrderController {
 
   @PostMapping
   public SaleOrder createSaleOrder(@RequestBody SaleOrder saleOrder) {
+    System.out.println(saleOrder.getFk_client_id() + " ");
     return saleOrderService.save(saleOrder);
   }
 

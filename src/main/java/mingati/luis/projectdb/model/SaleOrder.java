@@ -1,5 +1,7 @@
 package mingati.luis.projectdb.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Date;
 import java.util.List;
 
@@ -9,7 +11,8 @@ public class SaleOrder {
   private double total_price;
   private OrderType order_type;
   private PaymentMethod payment_method;
-  private int fk_client_id;
+  @JsonProperty("fk_Client_id")
+  private Integer fk_client_id;
   private int fk_nfe_id;
   private List<ProductDetailSale> productDetails;
 
@@ -29,7 +32,7 @@ public class SaleOrder {
   }
 
   public SaleOrder(int id, Date date, double total_price, OrderType order_type,
-                   PaymentMethod payment_method, int fk_client_id, int fk_nfe_id, List<ProductDetailSale> productDetails) {
+                   PaymentMethod payment_method, Integer fk_client_id, int fk_nfe_id, List<ProductDetailSale> productDetails) {
     this.id = id;
     this.date = date;
     this.total_price = total_price;
@@ -80,11 +83,11 @@ public class SaleOrder {
     this.payment_method = payment_method;
   }
 
-  public int getFk_client_id() {
+  public Integer getFk_client_id() {
     return fk_client_id;
   }
 
-  public void setFk_client_id(int fk_client_id) {
+  public void setFk_client_id(Integer fk_client_id) {
     this.fk_client_id = fk_client_id;
   }
 

@@ -1,5 +1,7 @@
 package mingati.luis.projectdb.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Phone {
   private int id;
   private String phone;
