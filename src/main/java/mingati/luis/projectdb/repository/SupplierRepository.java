@@ -19,17 +19,21 @@ public class SupplierRepository {
   }
 
   public Supplier findById(int id) {
-    return jdbcTemplate.queryForObject("SELECT * FROM Supplier WHERE id = ?", useMapper, new Object[] { id });
+    return jdbcTemplate.queryForObject(
+            "CALL GetSupplierById(?)",
+            new Object[]{id},
+            useMapper
+    );
   }
 
   public int save(Supplier supplier) {
     return jdbcTemplate.update("INSERT INTO Supplier (name, cnpj) VALUES (?, ?)",
-        new Object[] { supplier.getName(), supplier.getCnpj() });
+            new Object[] { supplier.getName(), supplier.getCnpj() });
   }
 
   public int update(Supplier supplier) {
     return jdbcTemplate.update("UPDATE Supplier SET name = ?, cnpj = ? WHERE id = ?",
-        new Object[] { supplier.getName(), supplier.getCnpj(), supplier.getId() });
+            new Object[] { supplier.getName(), supplier.getCnpj(), supplier.getId() });
   }
 
   @Transactional
